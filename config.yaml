@@ -1,0 +1,83 @@
+data:
+  data_path: "particle_generation/"
+  val_size: 0.1
+  download: False
+  scaler:
+    n_quantiles: 100000
+
+model:
+  G:
+    noise_dim: 128
+    fc_dim: 128
+    num_layers: 5
+    normalization: 'bn' # ln, gn, in, bn
+    use_spectral: 1
+  C:
+    fc_dim: 128
+    num_layers: 5
+    normalization: 'ln' # ln, gn, in, bn
+    use_spectral: 1
+
+student:
+  G:
+    noise_dim: 128
+    fc_dim: 128
+    num_layers: 3
+    normalization: 'bn' # ln, gn, in, bn
+    use_spectral: 1
+  C:
+    fc_dim: 128
+    num_layers: 3
+    normalization: 'ln' # ln, gn, in, bn
+    use_spectral: 1
+
+
+losses:
+  G:
+    adversarial: 1
+  C:
+    adversarial: 1
+    gradient_penalty: 10
+
+experiment:
+  particle: 'kaon' # specify for each run
+  data:
+    context_dim: 3
+    data_dim: 5
+  weights:
+    n_quantiles: 0
+    positive: True
+    enable: True
+  checkpoint_path: '.'
+  grad_clip: 10
+  epochs: 1000
+  batch_size: 16384
+  lr:
+    G: 0.0005
+    C: 0.0005
+  student_activations: [1, 2]
+  teacher_activations: [2, 4]
+
+
+utils:
+  use_ddp: 0
+  device: "cuda:0"
+  num_workers: 0
+  save_interval: 50
+  sample_interval: 5
+  eval_interval: 5
+  log_iter_interval: 50
+  epoch_iters: 1000
+  tags: ''
+
+wandb:
+  project_name: rich-2021
+  enabled: True
+  api_key: ''
+
+metric:
+  classification:
+    split_size: 0.5
+    iterations: 5000
+    verbose_each_iter: 1000 # 0 for no output
+    depth: 7
